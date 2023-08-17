@@ -15,7 +15,7 @@ export default function Sidebar() {
     },
     {
       icon: Plus,
-      href: '/platform/new',
+      href: '/figures/new',
       label: 'New',
       isProtected: true,
     },
