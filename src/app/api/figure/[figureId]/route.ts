@@ -36,6 +36,7 @@ export async function PATCH(
     const figure = await prismaDB.figure.update({
       where: {
         id: params.figureId,
+        userId: user.id,
       },
       data: {
         categoryId,
