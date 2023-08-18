@@ -1,5 +1,5 @@
 import prismaDB from '@/lib/prisma-db';
-import { currentUser } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 // connect with db
@@ -53,5 +53,30 @@ export async function PATCH(
   } catch (err) {
     console.log('[Figure patch]: ', err);
     return new NextResponse('Internal Error: ', { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { figureId: string } }
+) {
+  try {
+    const { userId } = auth();
+
+    // HAVE NOT LOGIN
+    if (!userId) {
+      return new NextResponse('Unauthorized, ', { status: 401 });
+    }
+
+    const figure = await prismaDB.figure.delete({
+      where: {
+        userId,
+        id: params.figureId,
+      },
+    });
+    return NextResponse.json(figure);
+  } catch (err) {
+    console.log('[Figure delete], ', err);
+    return new NextResponse('Internal Error, ', { status: 500 });
   }
 }
