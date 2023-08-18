@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
@@ -13,24 +13,24 @@ datasource db {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
+  id      String   @id @default(uuid())
+  name    String
   figures Figure[]
 }
 
 model Figure {
-  id         String   @id @default(uuid())
-  userId     String
-  userName   String
-  src       String
-  name      String @db.Text
-  description String 
+  id           String @id @default(uuid())
+  userId       String
+  userName     String
+  src          String
+  name         String @db.Text
+  description  String
   instructions String @db.Text
-  seed     String @db.Text
-  categoryId String
+  seed         String @db.Text
+  categoryId   String
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   category Category @relation(fields: [categoryId], references: [id])
 
