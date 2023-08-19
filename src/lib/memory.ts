@@ -2,7 +2,6 @@ import { Redis } from '@upstash/redis';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeClient } from '@pinecone-database/pinecone';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { count } from 'console';
 
 export type FigureKey = {
   figureName: string;
@@ -97,8 +96,8 @@ export class MemoryManager {
   // see the chat history
   public async seedChatHistory(
     seedContent: string,
-    figureKey: FigureKey,
-    delimiter: string = '\n'
+    delimiter: string = '\n',
+    figureKey: FigureKey
   ) {
     const key = this.generateRedisFigureKey(figureKey);
     if (await this.history.exists(key)) {

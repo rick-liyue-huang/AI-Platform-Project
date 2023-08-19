@@ -41,7 +41,7 @@ export default function ChatMessages({ isLoading, figure, messages }: Props) {
           role={m.role}
           key={m.content}
           content={m.content}
-          src={m.src}
+          src={figure.src}
         />
       ))}
       {isLoading && <ChatMessage role="system" src={figure.src} isLoading />}
