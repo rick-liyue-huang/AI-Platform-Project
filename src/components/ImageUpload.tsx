@@ -35,6 +35,8 @@ export const ImageUpload = ({ value, onChange, disabled }: Props) => {
               alt="Upload"
               src={value || '/placeholder.svg'}
               className="rounded-lg object-cover"
+              priority
+              sizes="(max-width: 640px) 100vw, 640px"
             />
           </div>
         </div>

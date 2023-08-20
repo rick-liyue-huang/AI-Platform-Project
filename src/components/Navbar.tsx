@@ -9,6 +9,7 @@ import { UserButton } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/theme-toggle';
 import MobileSidebar from '@/components/MobileSidebar';
+import { useProModal } from '@/lib/zustand-store';
 
 const font = Poppins({
   weight: '600',
@@ -16,6 +17,8 @@ const font = Poppins({
 });
 
 export default function Navbar() {
+  const proModal = useProModal();
+
   return (
     <div className="fixed w-full z-50 flex justify-between items-center py-2 px-4 border-b border-primary/10 bg-secondary h-16">
       <div className="flex items-center">
@@ -33,7 +36,7 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex items-center gap-x-3">
-        <Button size={'sm'} variant={'premium'}>
+        <Button size={'sm'} variant={'premium'} onClick={proModal.onOpen}>
           Update
           <Sparkles className="w-4 h-4 fill-white text-white ml-2" />
         </Button>

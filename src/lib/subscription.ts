@@ -1,7 +1,6 @@
 import { auth } from '@clerk/nextjs';
-import prismaDB from './prisma-db';
-
-const DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
+import prismaDB from '@/lib//prisma-db';
+const DAY_IN_MS = 86_400_000;
 
 export const checkSubscription = async () => {
   const { userId } = auth();
@@ -10,15 +9,15 @@ export const checkSubscription = async () => {
     return false;
   }
 
-  const userSubscription = await prismaDB.userSubscription.findFirst({
+  const userSubscription = await prismaDB.userSubscription.findUnique({
     where: {
-      userId,
+      userId: userId,
     },
     select: {
+      stripeSubscriptionId: true,
       stripeCurrentPeriodEnd: true,
       stripeCustomerId: true,
       stripePriceId: true,
-      stripeSubscriptionId: true,
     },
   });
 
@@ -28,7 +27,7 @@ export const checkSubscription = async () => {
 
   const isValid =
     userSubscription.stripePriceId &&
-    userSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MILLISECONDS >
+    userSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS >
       Date.now();
 
   return !!isValid;

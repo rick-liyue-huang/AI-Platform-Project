@@ -1,11 +1,11 @@
 import { auth, currentUser } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
+
 import prismaDB from '@/lib/prisma-db';
 import { stripe } from '@/lib/stripe';
 import { absoluteUrl } from '@/lib/utils';
-import { use } from 'react';
 
-const settingUrl = absoluteUrl('/settings');
+const settingsUrl = absoluteUrl('/settings');
 
 export async function GET() {
   try {
@@ -13,7 +13,7 @@ export async function GET() {
     const user = await currentUser();
 
     if (!userId || !user) {
-      return new NextResponse('unauthorized', { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const userSubscription = await prismaDB.userSubscription.findUnique({
@@ -25,15 +25,15 @@ export async function GET() {
     if (userSubscription && userSubscription.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: userSubscription.stripeCustomerId,
-        return_url: settingUrl,
+        return_url: settingsUrl,
       });
 
       return new NextResponse(JSON.stringify({ url: stripeSession.url }));
     }
 
     const stripeSession = await stripe.checkout.sessions.create({
-      success_url: settingUrl,
-      cancel_url: settingUrl,
+      success_url: settingsUrl,
+      cancel_url: settingsUrl,
       payment_method_types: ['card'],
       mode: 'subscription',
       billing_address_collection: 'auto',
@@ -41,10 +41,10 @@ export async function GET() {
       line_items: [
         {
           price_data: {
-            currency: 'AUD',
+            currency: 'USD',
             product_data: {
-              name: 'Figure Pro',
-              description: 'Figure Pro Subscription',
+              name: 'Companion Pro',
+              description: 'Create Custom AI Companions',
             },
             unit_amount: 999,
             recurring: {
@@ -60,8 +60,8 @@ export async function GET() {
     });
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }));
-  } catch (err) {
-    console.log('[Stripe GET] Error:', err);
-    return new NextResponse('internal server error', { status: 500 });
+  } catch (error) {
+    console.log('[STRIPE]', error);
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }
